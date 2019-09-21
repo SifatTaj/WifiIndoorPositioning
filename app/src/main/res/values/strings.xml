@@ -6,6 +6,7 @@
     <string name="add_reference_point">Add a Reference Point</string>
     <string name="action_settings">Settings</string>
     <string name="locate_me">Locate Me</string>
+    <string name="my_app_id">fingerprint-fpret</string>
 
     <string-array name="algoNames">
         <item name="1">K Nearest Neighbor (KNN) Algorithm</item>

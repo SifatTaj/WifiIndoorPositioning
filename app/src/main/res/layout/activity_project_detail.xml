@@ -63,4 +63,10 @@
         android:layout_height="wrap_content"
         android:text="Locate Me" />
 
+    <Button
+        android:id="@+id/btn_push_db"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Push DB" />
+
 </LinearLayout>

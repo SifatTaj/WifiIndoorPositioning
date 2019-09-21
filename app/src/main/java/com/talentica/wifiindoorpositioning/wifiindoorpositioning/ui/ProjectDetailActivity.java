@@ -19,6 +19,18 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.mongodb.lang.NonNull;
+import com.mongodb.stitch.android.core.Stitch;
+import com.mongodb.stitch.android.core.StitchAppClient;
+import com.mongodb.stitch.android.core.auth.StitchUser;
+import com.mongodb.stitch.android.services.mongodb.remote.RemoteMongoClient;
+import com.mongodb.stitch.android.services.mongodb.remote.RemoteMongoCollection;
+import com.mongodb.stitch.core.auth.providers.anonymous.AnonymousCredential;
+import com.mongodb.stitch.core.services.mongodb.remote.RemoteUpdateOptions;
+import com.mongodb.stitch.core.services.mongodb.remote.RemoteUpdateResult;
 import com.talentica.wifiindoorpositioning.wifiindoorpositioning.R;
 import com.talentica.wifiindoorpositioning.wifiindoorpositioning.adapter.holder.AccessPointSection;
 import com.talentica.wifiindoorpositioning.wifiindoorpositioning.adapter.holder.ReferencePointSection;
@@ -27,9 +39,15 @@ import com.talentica.wifiindoorpositioning.wifiindoorpositioning.model.IndoorPro
 import com.talentica.wifiindoorpositioning.wifiindoorpositioning.model.ReferencePoint;
 import com.talentica.wifiindoorpositioning.wifiindoorpositioning.utils.RecyclerItemClickListener;
 
+import org.bson.Document;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import io.github.luizgrp.sectionedrecyclerviewadapter.SectionParameters;
 import io.github.luizgrp.sectionedrecyclerviewadapter.SectionedRecyclerViewAdapter;
 import io.realm.Realm;
+import io.realm.RealmList;
 
 /**
  * Created by suyashg on 25/08/17.
@@ -38,7 +56,7 @@ import io.realm.Realm;
 public class ProjectDetailActivity extends AppCompatActivity implements View.OnClickListener, RecyclerItemClickListener.OnItemClickListener {
 
     private RecyclerView pointRV;
-    private Button btnAddAp, btnAddRp, btnLocateMe;
+    private Button btnAddAp, btnAddRp, btnLocateMe, btnPushDb;
     private IndoorProject project;
     private SectionedRecyclerViewAdapter sectionAdapter = new SectionedRecyclerViewAdapter();
     private ReferencePointSection rpSec;
@@ -78,6 +96,9 @@ public class ProjectDetailActivity extends AppCompatActivity implements View.OnC
 
         btnLocateMe = findViewById(R.id.btn_locate_me);
         btnLocateMe.setOnClickListener(this);
+
+        btnPushDb = findViewById(R.id.btn_push_db);
+        btnPushDb.setOnClickListener(this);
         setCounts();
 
         SectionParameters sp = new SectionParameters.Builder(R.layout.item_point_details)
@@ -139,6 +160,8 @@ public class ProjectDetailActivity extends AppCompatActivity implements View.OnC
             } else{
                 startAddLocateMeActivity();
             }
+        } else if (view.getId() == btnPushDb.getId()) {
+            startPushDBActivity(projectId);
         }
     }
 
@@ -149,6 +172,13 @@ public class ProjectDetailActivity extends AppCompatActivity implements View.OnC
         } else if(requestCode == PERM_REQ_CODE_LM_ACCESS_COARSE_LOCATION && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             startAddLocateMeActivity();
         }
+    }
+
+    private void startPushDBActivity(String apId) {
+        Intent intent = new Intent(this, PushDBActivity.class);
+        intent.putExtra("projectId", projectId);
+        intent.putExtra("apID", apId);
+        startActivity(intent);
     }
 
     private void startAddAPActivity(String apId) {
